@@ -22,7 +22,7 @@ This repository contains the codebase for my personal website, a Single Page App
 
 ## How to Run
 
-This api uses Vite as a build tool.
+This app uses Vite as a build tool.
 
 ### 1. Product Status
 - The product is not created and implemented yet.
