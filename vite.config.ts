@@ -8,7 +8,7 @@ dotenv.config();
 
 export default defineConfig({
   server: {
-    port: Number(process.env.APP_PORT) | 5000,
+    port: Number(process.env.VITE_APP_PORT) || 5000,
   },
   plugins: [react()],
 })
