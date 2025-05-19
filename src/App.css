@@ -4,3 +4,11 @@
   padding: 2rem;
   text-align: center;
 }
+
+
+@font-face {
+  font-family: 'KyivType Sans';
+  src: url('./assets/font/KyivTypeSans-VarGX.ttf') format('truetype');
+}
+
+
