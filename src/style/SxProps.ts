@@ -66,6 +66,7 @@ const navElement = {
     fontWeight: 150,
     color: 'darkgray',
     marginX: '1rem',
+    textTransform: 'None'
 
 }
 
