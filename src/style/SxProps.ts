@@ -39,5 +39,9 @@ const subTitle: SxProps = {
     }
 }
 
+const clickable = {
+    cursor: 'pointer'
+}
 
-export { mainPageBackground, mainTitle, subTitle, }
+
+export { mainPageBackground, mainTitle, subTitle, clickable}
