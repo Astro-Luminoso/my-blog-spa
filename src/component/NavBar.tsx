@@ -1,7 +1,7 @@
 import {AppBar, Box, Button, Toolbar} from "@mui/material";
 import {config} from "../config/config.ts";
 import {useNavigate} from "react-router-dom";
-import {clickable} from "../style/SxProps.ts";
+import {clickable, navElement} from "../style/SxProps.ts";
 
 const NavBar = () => {
 
@@ -34,8 +34,9 @@ const NavBar = () => {
                         return(
                             <Button
                                 key={index}
-
-                                onClick={() => handleNavClick(item.path)}>
+                                sx={navElement}
+                                onClick={() => handleNavClick(item.path)}
+                                disableRipple>
                                 {item.name}
                             </Button>
                         )
