@@ -40,4 +40,35 @@ const subTitle: SxProps = {
 }
 
 
-export { mainPageBackground, mainTitle, subTitle, }
+const buttonReaction = {
+    transition: 'color 0.2s ease-in-out',
+    '&:hover': {
+        color: 'gray',
+        backgroundColor: 'inherit'
+    },
+    '&:active': {
+        transition: 'color 0.1s ease-in-out',
+        color: 'lightgray',
+
+    }
+}
+
+const clickable = {
+    cursor: 'pointer'
+}
+
+const navElement = {
+    ...clickable,
+    ...kiyvTypeSans,
+    ...buttonReaction,
+    fontSize: '1.5rem',
+    textAlign: 'center',
+    fontWeight: 150,
+    color: 'darkgray',
+    marginX: '1rem',
+    textTransform: 'None'
+
+}
+
+
+export { mainPageBackground, mainTitle, subTitle, clickable, navElement, }
