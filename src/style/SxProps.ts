@@ -23,6 +23,12 @@ const kiyvTypeSans = {
     color: "#ffffff",
 }
 
+const laBelleAurore = {
+    fontFamily: 'La Belle Aurore',
+    fontWeight: 50,
+    color: "black",
+}
+
 const mainTitle: SxProps = {
     ...kiyvTypeSans,
     fontSize: {
@@ -71,4 +77,4 @@ const navElement = {
 }
 
 
-export { mainPageBackground, mainTitle, subTitle, clickable, navElement, }
+export { mainPageBackground, mainTitle, subTitle, clickable, navElement, laBelleAurore, }
