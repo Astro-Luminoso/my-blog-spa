@@ -1,4 +1,4 @@
-import {Box, Container, Typography, Grid} from "@mui/material";
+import {Box, Container, Typography, Grid,} from "@mui/material";
 import {motion} from "framer-motion";
 import {laBelleAurore} from "../../style/SxProps.ts";
 
@@ -7,17 +7,43 @@ const PageTwo = () => {
     const MotionBox = motion.create(Box);
     const MotionTypography = motion.create(Typography);
     return (
-        <Container maxWidth={false}>
-            <Grid container>
-                <Grid size={{xs: 12, lg:6}}>
+        <Container
+            maxWidth={false}
+            sx={{
+                width: '100%',
+                margin: '0 auto',
+                maxWidth: 'none'
+            }}
+        >
+            <Grid
+                container
+                spacing={2}
+                sx={{
+                    direction: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start'
+                }}
+            >
+                <Grid size={{xs:12, lg:6}} sx={{minWidth: '50vw'}}>
                     <MotionTypography
                         sx={{
                             ...laBelleAurore,
-                                fontSize: }>
+                            fontSize: '4rem',
+                            textAlign: 'left',
 
+                    }}>
+                        Welcome to My Small Space
+                    </MotionTypography>
+                </Grid>
+                <Grid size={{xs:12, lg:6}} sx={{minWidth: '50vw'}}>
+                    <MotionTypography sx={{ textAlign: 'right' }}>
+                        Whos there?
                     </MotionTypography>
                 </Grid>
             </Grid>
         </Container>
     )
 }
+
+
+export default PageTwo;
