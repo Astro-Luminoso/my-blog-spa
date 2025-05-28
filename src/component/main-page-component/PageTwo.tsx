@@ -1,50 +1,52 @@
 import {Box, Container, Typography, Grid,} from "@mui/material";
 import {motion} from "framer-motion";
 import {laBelleAurore} from "../../style/SxProps.ts";
+import {config} from "../../config/config.ts";
 
 const PageTwo = () => {
 
     const MotionBox = motion.create(Box);
     const MotionTypography = motion.create(Typography);
     return (
-        <Container
-            maxWidth={false}
-            sx={{
-                width: '100%',
-                margin: '0 auto',
-                maxWidth: 'none'
-            }}
-        >
+        <Box sx={{ display:'flex', alignItems: 'center'}}>
             <Grid
                 container
-                spacing={2}
+                spacing={6}
                 sx={{
                     direction: 'row',
                     justifyContent: 'space-between',
-                    alignItems: 'flex-start'
                 }}
             >
-                <Grid size={{xs:12, lg:6}} sx={{minWidth: '50vw'}}>
+                <Grid
+                    size={{xs:12, lg:7}}
+                    sx={{}}>
                     <MotionTypography
                         sx={{
                             ...laBelleAurore,
-                            fontSize: '4rem',
+                            fontSize: {lg: '4rem', xl: '5rem'},
                             textAlign: 'left',
-                            marginY: '3rem'
-
+                            marginBottom: '3rem',
                     }}>
                         Welcome to My Small Space
                     </MotionTypography>
                     <br/>
-                    <MotionTypography sx={{ textAlign: 'left', fontSize: '2rem'}}>
+                    <MotionTypography sx={{ textAlign: 'left', fontSize: '2rem', marginTop: '3rem'}}>
                         This space is for sharing knowledge, tips,<br/>and resources with others.
                     </MotionTypography>
                 </Grid>
-                <Grid size={{xs:12, lg:6}} sx={{minWidth: '50vw'}}>
+                <Grid size={{xs:12, lg:5}}>
+                    <MotionBox
+                        component={'img'}
+                        src={`${config.API_URL}/open/images/welcome-image`}
+                        alt={'landing page image'}
+                        sx={{
+                            textAlign: 'right'
+                        }}
+                    />
 
                 </Grid>
             </Grid>
-        </Container>
+        </Box>
     )
 }
 
