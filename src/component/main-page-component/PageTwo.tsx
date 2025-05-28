@@ -1,4 +1,4 @@
-import {Box, Container, Typography, Grid,} from "@mui/material";
+import {Box, Typography, Grid,} from "@mui/material";
 import {motion} from "framer-motion";
 import {laBelleAurore} from "../../style/SxProps.ts";
 import {config} from "../../config/config.ts";
