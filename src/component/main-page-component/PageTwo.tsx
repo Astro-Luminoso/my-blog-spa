@@ -5,7 +5,6 @@ import {config} from "../../config/config.ts";
 
 const PageTwo = () => {
 
-    const MotionBox = motion.create(Box);
     const MotionTypography = motion.create(Typography);
     return (
         <Box sx={{ display:'flex', alignItems: 'center'}}>
@@ -49,11 +48,10 @@ const PageTwo = () => {
                     </MotionTypography>
                 </Grid>
                 <Grid size={{xs:12, lg:5}}>
-                    <MotionBox
-                        component={'img'}
+                    <motion.img
                         src={`${config.API_URL}/open/images/welcome-image`}
                         alt={'landing page image'}
-                        sx={{
+                        style={{
                             textAlign: 'right'
                         }}
                         initial={{ opacity: 0, x: 30 }}
