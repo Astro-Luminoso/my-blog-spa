@@ -36,7 +36,8 @@ const PageTwo = () => {
                     <MotionTypography
                         sx={{
                             textAlign: 'left',
-                            fontSize: '2rem',
+                            fontFamily: 'Laila',
+                            fontSize: '2.5rem',
                             marginTop: '3rem'
                         }}
                         initial={{ opacity: 0, y: 20 }}
@@ -44,7 +45,7 @@ const PageTwo = () => {
                         transition={{ duration: 2, delay: 1 }}
                         exit={{opacity: 0, y: 20, transition: {duration: 0.5}}}
                     >
-                        This space is for sharing knowledge, tips,<br/>and resources with others.
+                        The space for sharing knowledge, tips,<br/>and resources with others.
                     </MotionTypography>
                 </Grid>
                 <Grid size={{xs:12, lg:5}}>
