@@ -16,3 +16,7 @@
   src: url('./assets/font/LaBelleAurore-Regular.ttf') format('truetype');
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
