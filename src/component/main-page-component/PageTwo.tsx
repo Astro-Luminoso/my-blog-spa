@@ -28,7 +28,7 @@ const PageTwo = () => {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 2 }}
-                        exit={{opacity: 0, y: 20}}
+                        exit={{opacity: 0, y: -20, transition: {duration: 0.5}}}
                     >
                         Welcome to My Small Space
                     </MotionTypography>
@@ -42,7 +42,7 @@ const PageTwo = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 2, delay: 1 }}
-                        exit={{opacity: 0, y: -20}}
+                        exit={{opacity: 0, y: 20, transition: {duration: 0.5}}}
                     >
                         This space is for sharing knowledge, tips,<br/>and resources with others.
                     </MotionTypography>
@@ -57,7 +57,7 @@ const PageTwo = () => {
                         initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 2 }}
-                        exit={{opacity: 0, x: -30}}
+                        exit={{opacity: 0, x: 30, transition: {duration: 0.5}}}
                     />
 
                 </Grid>

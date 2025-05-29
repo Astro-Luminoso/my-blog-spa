@@ -8,11 +8,11 @@ const PageOne = () => {
     const MotionTypography = motion.create(Typography);
 
     return (
-        <Container maxWidth={false}>
+        <Container maxWidth={false} >
             <MotionBox
                 initial={{opacity: 0, y: 30}}
                 animate={{opacity: 1, y: 0}}
-                exit={{opacity: 0, y: -30}}
+                exit={{opacity: 0, y: -30, transition: {duration: 0.5}}}
                 transition={{duration: 2}}
                 sx={mainPageBackground}>
                 <MotionTypography
