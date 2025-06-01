@@ -1,4 +1,4 @@
-import {Box, Typography, Grid,} from "@mui/material";
+import { Typography, Grid, Container,} from "@mui/material";
 import {motion} from "framer-motion";
 import {laBelleAurore} from "../../style/SxProps.ts";
 import {config} from "../../config/config.ts";
@@ -7,7 +7,7 @@ const PageTwo = () => {
 
     const MotionTypography = motion.create(Typography);
     return (
-        <Box sx={{ display:'flex', alignItems: 'center'}}>
+        <Container maxWidth={false} sx={{ display:'flex', alignItems: 'center'}}>
             <Grid
                 container
                 spacing={6}
@@ -63,7 +63,7 @@ const PageTwo = () => {
 
                 </Grid>
             </Grid>
-        </Box>
+        </Container>
     )
 }
 
