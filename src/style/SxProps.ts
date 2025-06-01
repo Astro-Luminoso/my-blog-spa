@@ -29,6 +29,16 @@ const laBelleAurore = {
     color: "black",
 }
 
+const mainTitle: SxProps = {
+    ...kiyvTypeSans,
+    fontSize: {
+        xs: "3rem",
+        md: "4rem",
+    },
+    fontWeight: 50,
+    color: '#000000'
+}
+
 const subTitle: SxProps = {
     ...kiyvTypeSans,
     fontSize: {
@@ -69,4 +79,4 @@ const navElement = {
 }
 
 
-export { mainPageBackground, subTitle, clickable, navElement, laBelleAurore, }
+export { mainPageBackground, subTitle, clickable, navElement, laBelleAurore, mainTitle, }

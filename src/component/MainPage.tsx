@@ -2,6 +2,7 @@ import PageOne from "./main-page-component/PageOne.tsx";
 import PageTwo from "./main-page-component/PageTwo.tsx";
 import {useEffect, useRef, useState} from "react";
 import {AnimatePresence} from "framer-motion";
+import PageThree from "./main-page-component/PageThree.tsx";
 
 
 const MainPage = () => {
@@ -9,8 +10,7 @@ const MainPage = () => {
     const pages = [
         <PageOne key={'1'}/>,
         <PageTwo key={'2'}/>,
-        //TODO: Uncomment after PageThree is ready
-        //<PageThree key={'3'}/>,
+        <PageThree key={'3'}/>,
     ];
 
     const [pageIndex, setPageIndex] = useState(0);
