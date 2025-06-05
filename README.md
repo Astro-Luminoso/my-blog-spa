@@ -49,7 +49,7 @@ There are some rules to run this repository even if the owner of this repository
 
 ## Copy Rights
 
-Copyright © 2024 HanByeol Yang. All rights reserved.
+Copyright © 2024-2025 HanByeol Yang. All rights reserved.
 
 This software and its associated documentation may not be reproduced, distributed, modified, or used in any form or by any means—electronic, mechanical, photocopying, recording, or otherwise—without the prior written permission of the copyright holder, except as provided by applicable law.
 
