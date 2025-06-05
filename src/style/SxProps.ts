@@ -80,4 +80,4 @@ const navElement = {
 }
 
 
-export { mainPageBackground, subTitle, clickable, navElement, laBelleAurore, mainTitle, }
+export { mainPageBackground, subTitle, clickable, navElement, laBelleAurore, mainTitle, buttonReaction, }
