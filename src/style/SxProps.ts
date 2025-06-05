@@ -36,7 +36,8 @@ const mainTitle: SxProps = {
         md: "4rem",
     },
     fontWeight: 50,
-    color: '#000000'
+    color: '#000000',
+    marginBottom: '1rem',
 }
 
 const subTitle: SxProps = {
