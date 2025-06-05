@@ -11,4 +11,17 @@
   src: url('./assets/font/KyivTypeSans-VarGX.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'La Belle Aurore';
+  src: url('./assets/font/LaBelleAurore-Regular.ttf') format('truetype');
+}
 
+@font-face {
+  font-family: 'Laila';
+  src: url('./assets/font/Laila-Regular.ttf') format('truetype');
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
