@@ -15,6 +15,7 @@ const PageThree = () => {
 
     const MotionTypography = motion.create(Typography);
     const MotionBox = motion.create(Box);
+    const MotionButton = motion.create(Button);
 
     /**
      * Function to render a no content message
@@ -158,7 +159,7 @@ const PageThree = () => {
 
                 </Grid>
             </Grid>
-            <Button
+            <MotionButton
                 sx={{
                     ...buttonReaction,
                     marginTop: '4rem',
@@ -168,8 +169,12 @@ const PageThree = () => {
                     borderRadius: 5,
                 }}
                 disableRipple
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 2, delay: 2.5 }}
+                exit={{opacity: 0, y: 20, transition: {duration: 0.5}}}
             >See More Blog Post
-            </Button>
+            </MotionButton>
         </Container>
     );
 }
