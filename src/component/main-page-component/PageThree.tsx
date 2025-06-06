@@ -37,7 +37,7 @@ const PageThree = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
-                        height: {md: '13rem', lg: '32.5rem'},
+                        height: {xs:'15rem', md: '13rem', lg: '32.5rem'},
                     }}>
                     <Typography variant={'body1'} sx={{textAlign: 'center'}}>
                         {comment}
@@ -106,7 +106,8 @@ const PageThree = () => {
                   sx={{
                       justifyContent: 'space-between',
                       direction: 'row',
-                      width: {lg: '120rem'}
+                      minWidth: {xs: '17rem', sm: '40rem', lg: '120rem'},
+                      maxWidth: {xs: '20rem', sm: '64rem', lg: '120rem'}
                   }}>
                 <Grid size={{xs:12, lg:7}}>
                     <MotionTypography
@@ -138,7 +139,7 @@ const PageThree = () => {
                 >
                     <Divider orientation={'vertical'} flexItem/>
                 </Grid>
-                <Grid size={{xs:12, lg:4}}>
+                <Grid size={{xs:12, lg:4}} sx={{display: {xs: 'none', sm:'block'}}}>
                     <MotionTypography
                         sx={{...mainTitle, textAlign: 'left'}}
                         initial={{ opacity: 0, x: 20 }}
