@@ -43,7 +43,7 @@ const mainTitle: SxProps = {
 const subTitle: SxProps = {
     ...kiyvTypeSans,
     fontSize: {
-        xs: "2rem",
+        xs: "1.5rem",
         md: "3rem",
     }
 }
