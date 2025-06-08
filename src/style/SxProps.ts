@@ -33,7 +33,8 @@ const mainTitle: SxProps = {
     ...kiyvTypeSans,
     fontSize: {
         xs: "2rem",
-        md: "4rem",
+        md: "3rem",
+        xl: "4rem",
     },
     fontWeight: 50,
     color: '#000000',
