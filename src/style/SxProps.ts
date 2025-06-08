@@ -32,7 +32,7 @@ const laBelleAurore = {
 const mainTitle: SxProps = {
     ...kiyvTypeSans,
     fontSize: {
-        xs: "3rem",
+        xs: "2rem",
         md: "4rem",
     },
     fontWeight: 50,
@@ -43,7 +43,7 @@ const mainTitle: SxProps = {
 const subTitle: SxProps = {
     ...kiyvTypeSans,
     fontSize: {
-        xs: "2rem",
+        xs: "1.5rem",
         md: "3rem",
     }
 }
