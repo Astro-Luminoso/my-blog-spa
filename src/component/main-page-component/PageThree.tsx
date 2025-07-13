@@ -106,7 +106,7 @@ const PageThree = () => {
                   sx={{
                       justifyContent: 'space-between',
                       direction: 'row',
-                      minWidth: {xs: '17rem', sm: '40rem', lg: '60rem'},
+                      minWidth: {xs: '17rem', sm: '40rem', lg: '60rem', xl: '110rem'},
                       maxWidth: {xs: '20rem', sm: '64rem', lg: '120rem'}
                   }}>
                 <Grid size={{xs:12, lg:6, xl: 7}}>
@@ -119,7 +119,6 @@ const PageThree = () => {
                     >
                         Recent Posts
                     </MotionTypography>
-                    {/*TODO: Remove this hardcoded post cards when all hooks are ready*/}
                     <MotionBox
                         initial={{opacity: 0, y: 20}}
                         animate={{opacity: 1, y: 0}}
@@ -129,6 +128,7 @@ const PageThree = () => {
                         {recentPost()}
                     </MotionBox>
                 </Grid>
+
                 <Grid
                     size={{lg:1}}
                     sx={{
@@ -137,8 +137,10 @@ const PageThree = () => {
                         justifyContent: 'center'
                         }}
                 >
+                    {/*Divider between Post and Albums*/}
                     <Divider orientation={'vertical'} flexItem/>
                 </Grid>
+
                 <Grid size={{xs:12, lg:5, xl:4}} sx={{display: {xs: 'none', sm:'block'}}}>
                     <MotionTypography
                         sx={{...mainTitle, textAlign: 'left'}}
