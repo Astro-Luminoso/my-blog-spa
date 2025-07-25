@@ -107,7 +107,6 @@ const PageThree = () => {
                   sx={{
                       justifyContent: 'space-between',
                       direction: 'row',
-                      minWidth: {xs: '17rem', sm: '40rem', lg: '60rem', xl: '110rem'},
                       maxWidth: {xs: '20rem', sm: '64rem', lg: '120rem'}
                   }}>
                 <Grid size={{xs:12, lg:6, xl: 7}}>
