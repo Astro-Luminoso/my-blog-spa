@@ -1,8 +1,8 @@
 import {
-    Box, Button,
+    Box, Button, CircularProgress,
     Container,
     Paper,
-    Table,
+    Table, TableBody,
     TableCell,
     TableContainer, TableFooter,
     TableHead, TablePagination,
@@ -13,7 +13,10 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 
 import { motion } from "framer-motion";
 import {buttonReaction, mainTitle} from "../style/SxProps.ts";
-import {type ChangeEvent, type FC, useState} from "react";
+import {type ChangeEvent, type FC, useEffect, useState} from "react";
+import type {Post} from "../type/Post.ts";
+import {config} from "../config/config.ts";
+import axios from "axios";
 
 type TableRowBuilderProps = {
     row1: string;
@@ -35,14 +38,55 @@ const TableRowBuilder: FC<TableRowBuilderProps> = ({row1, row2, row3}:TableRowBu
 const MotionTypography = motion.create(Typography);
 const MotionButton = motion.create(Button);
 
+
+const PostIsLoading = () => {
+
+    return (
+        <TableRow>
+            <TableCell colSpan={3}>
+                <Box sx={{
+                    minHeight: `4px`,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center' // Add this line
+                }}>
+                    <CircularProgress color={'inherit'} />
+                </Box>
+            </TableCell>
+        </TableRow>
+    )
+}
+
+const showBlogPosts = (postList: Post[]) => {
+
+    return (
+        postList.map((post) => {
+            return(
+                <TableRowBuilder row1={post.title} row2={post.categoryTitle} row3={post.updateDate}/>
+            )
+        })
+
+    )
+}
+
 const BlogPost = () => {
 
     const [rowsPerPage, setRowsPerPage] = useState(8);
+    const [postList, setPostList] = useState<Post[] | null>(null);
+
     const handleChangeRowsPerPage = (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
         setRowsPerPage(parseInt(event.target.value, 10));
     };
+
+
+    useEffect(() => {
+        axios.get(`${config.API_URL}/open/blogposts`)
+            .then(res => {
+                setPostList(res.data);
+            })
+    }, []);
 
 
 
@@ -68,8 +112,6 @@ const BlogPost = () => {
                         border: '1px solid #CECECE',
                         color: 'black',
                         borderRadius: 5,
-
-
                     }}
                 >
                     Filter
@@ -80,19 +122,22 @@ const BlogPost = () => {
                 <TableContainer component={Paper}
                                 elevation={0}
                                 sx={{
-                                    height: `${56 * ( 9+ 1)}px`,
+                                    height: `${56.5 + 53 + 53 * 8}px`,
                                     border: '2px solid #CECECE',
                                     justifyContent: 'center',
                                     borderLeft: 'none',
                                     borderRight: 'none',
-                                    width: '100%',
+                                    width: '90%',
                                     backgroundColor: '#FFFEF8',
-                                    borderRadius: 0
+                                    borderRadius: 0,
                                 }}>
                     <Table aria-label={"blog posts table"}>
                         <TableHead>
                             <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
                         </TableHead>
+                        <TableBody>
+                            {postList === null ? <PostIsLoading /> : showBlogPosts(postList)}
+                        </TableBody>
                         <TableFooter>
                             <TablePagination
                                 rowsPerPageOptions={[8, 16, 25]}
