@@ -84,7 +84,7 @@ const BlogPost = () => {
     };
 
     const handleChangePage = (
-        event: React.MouseEvent<HTMLButtonElement> | null,
+        _: unknown | null,
         newPage: number,
     ) => {
         setPage(newPage);
