@@ -45,7 +45,7 @@ const PostIsLoading = () => {
         <TableRow>
             <TableCell colSpan={3}>
                 <Box sx={{
-                    minHeight: `4px`,
+                    height: `100%`,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center' // Add this line
@@ -91,11 +91,22 @@ const BlogPost = () => {
     };
 
 
+    // React.useEffect(() => {
+    //     axios.get(`${config.API_URL}/open/blogposts`)
+    //         .then(res => {
+    //             setPostList(res.data);
+    //         })
+    // }, []);
+
     React.useEffect(() => {
-        axios.get(`${config.API_URL}/open/blogposts`)
-            .then(res => {
-                setPostList(res.data);
-            })
+        const timer = setTimeout(() => {
+            axios.get(`${config.API_URL}/open/blogposts`)
+                .then(res => {
+                    setPostList(res.data);
+                })
+        }, 2000);
+
+        return () => clearTimeout(timer);
     }, []);
 
 
@@ -132,7 +143,6 @@ const BlogPost = () => {
                 <TableContainer component={Paper}
                                 elevation={0}
                                 sx={{
-                                    height: `${56.5 + 53 + 53 * 8}px`,
                                     border: '2px solid #CECECE',
                                     justifyContent: 'center',
                                     borderLeft: 'none',
@@ -141,8 +151,8 @@ const BlogPost = () => {
                                     backgroundColor: '#FFFEF8',
                                     borderRadius: 0,
                                 }}>
-                    <Table aria-label={"blog posts table"}>
-                        <TableHead>
+                    <Table aria-label={"blog posts table"} sx={{height: '36rem'}}>
+                        <TableHead sx={{borderBottom: '2px solid #CECECE'}}>
                             <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
                         </TableHead>
                         <TableBody>
