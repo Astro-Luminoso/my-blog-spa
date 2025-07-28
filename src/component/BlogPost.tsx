@@ -91,23 +91,23 @@ const BlogPost = () => {
     };
 
 
-    // React.useEffect(() => {
-    //     axios.get(`${config.API_URL}/open/blogposts`)
-    //         .then(res => {
-    //             setPostList(res.data);
-    //         })
-    // }, []);
-
     React.useEffect(() => {
-        const timer = setTimeout(() => {
-            axios.get(`${config.API_URL}/open/blogposts`)
-                .then(res => {
-                    setPostList(res.data);
-                })
-        }, 2000);
-
-        return () => clearTimeout(timer);
+        axios.get(`${config.API_URL}/open/blogposts`)
+            .then(res => {
+                setPostList(res.data);
+            })
     }, []);
+
+    // React.useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         axios.get(`${config.API_URL}/open/blogposts`)
+    //             .then(res => {
+    //                 setPostList(res.data);
+    //             })
+    //     }, 2000);
+    //
+    //     return () => clearTimeout(timer);
+    // }, []);
 
 
 
