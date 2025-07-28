@@ -13,7 +13,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 
 import { motion } from "framer-motion";
 import {buttonReaction, mainTitle} from "../style/SxProps.ts";
-import {type ChangeEvent, type FC, useEffect, useState} from "react";
+import * as React from "react";
 import type {Post} from "../type/Post.ts";
 import {config} from "../config/config.ts";
 import axios from "axios";
@@ -24,7 +24,7 @@ type TableRowBuilderProps = {
     row3: string;
 }
 
-const TableRowBuilder: FC<TableRowBuilderProps> = ({row1, row2, row3}:TableRowBuilderProps) => {
+const TableRowBuilder: React.FC<TableRowBuilderProps> = ({row1, row2, row3}:TableRowBuilderProps) => {
 
     return (
         <TableRow>
@@ -69,19 +69,29 @@ const showBlogPosts = (postList: Post[]) => {
     )
 }
 
+const pageSizeOptions: number[] = [8, 15, 20];
+
 const BlogPost = () => {
 
-    const [rowsPerPage, setRowsPerPage] = useState(8);
-    const [postList, setPostList] = useState<Post[] | null>(null);
+    const [pageSize, setPageSize] = React.useState(pageSizeOptions[0]);
+    const [page, setPage] = React.useState(0);
+    const [postList, setPostList] = React.useState<Post[] | null>(null);
 
     const handleChangeRowsPerPage = (
-        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
+        setPageSize(parseInt(event.target.value, 10));
+    };
+
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+    ) => {
+        setPage(newPage);
     };
 
 
-    useEffect(() => {
+    React.useEffect(() => {
         axios.get(`${config.API_URL}/open/blogposts`)
             .then(res => {
                 setPostList(res.data);
@@ -140,12 +150,12 @@ const BlogPost = () => {
                         </TableBody>
                         <TableFooter>
                             <TablePagination
-                                rowsPerPageOptions={[8, 16, 25]}
+                                rowsPerPageOptions={pageSizeOptions}
                                 count={100} // This should be the total number of posts
                                 colSpan={3}
-                                rowsPerPage={rowsPerPage}
-                                page={0}
-                                onPageChange={undefined}
+                                rowsPerPage={pageSize}
+                                page={page}
+                                onPageChange={handleChangePage}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
 
                             />
