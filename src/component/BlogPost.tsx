@@ -14,7 +14,6 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { motion } from "framer-motion";
 import {buttonReaction, mainTitle} from "../style/SxProps.ts";
 import * as React from "react";
-import type {Post} from "../type/Post.ts";
 import {config} from "../config/config.ts";
 import axios from "axios";
 
@@ -37,6 +36,7 @@ const TableRowBuilder: React.FC<TableRowBuilderProps> = ({row1, row2, row3}:Tabl
 
 const MotionTypography = motion.create(Typography);
 const MotionButton = motion.create(Button);
+const MotionBox = motion.create(Box);
 
 
 const PostIsLoading = () => {
@@ -76,10 +76,17 @@ const BlogPost = () => {
     const [pageSize, setPageSize] = React.useState(pageSizeOptions[0]);
     const [page, setPage] = React.useState(0);
     const [postList, setPostList] = React.useState<Post[] | null>(null);
+    const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({
+        title: null,
+        categoryId: null,
+        page: null,
+        size: null,
+    });
 
     const handleChangeRowsPerPage = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
+        console.log(`handleChangeRowsPerPage is triggered with new page size: ${event.target.value}`);
         setPageSize(parseInt(event.target.value, 10));
     };
 
@@ -87,16 +94,41 @@ const BlogPost = () => {
         _: unknown | null,
         newPage: number,
     ) => {
+        console.log(`handleChangePage is triggered with newPage: ${newPage}`);
         setPage(newPage);
     };
 
+    const handlePostList =
+        (page: number | null, size: number | null, query: string | null, categoryId: number | null) => {
 
-    React.useEffect(() => {
-        axios.get(`${config.API_URL}/open/blogposts`)
+        const baseUrl = `${config.API_URL}/open/blogposts`;
+        const queries : string[] = []
+        if (query) {
+            queries.push(`query=${query}`);
+        }
+        if (categoryId) {
+            queries.push(`categoryId=${categoryId}`);
+        }
+        if (page) {
+            queries.push(`page=${page}`);
+        }
+        if (size) {
+            queries.push(`size=${size}`);
+        }
+        const queryString = queries.length > 0 ? `?${queries.join('&')}` : '';
+        axios.get(baseUrl + queryString)
             .then(res => {
                 setPostList(res.data);
-            })
-    }, []);
+            });
+    }
+
+
+    React.useEffect(() => {
+        console.log("useEffect is triggered");
+        handlePostList(null, null, null, null);
+    },[])
+
+
 
     // React.useEffect(() => {
     //     const timer = setTimeout(() => {
@@ -139,7 +171,12 @@ const BlogPost = () => {
                     <FilterListIcon sx={{marginLeft: '0.5rem'}}/>
                 </MotionButton>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <MotionBox sx={{ display: 'flex', justifyContent: 'center' }}
+                    initial={{opacity: 0, x: 30}}
+                    animate={{opacity: 1, x: 0}}
+                    exit={{opacity: 0, y: 30, transition: {duration: 0.5}}}
+                    transition={{duration: 2, delay: 1}}
+            >
                 <TableContainer component={Paper}
                                 elevation={0}
                                 sx={{
@@ -156,7 +193,9 @@ const BlogPost = () => {
                             <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
                         </TableHead>
                         <TableBody>
-                            {postList === null ? <PostIsLoading /> : showBlogPosts(postList)}
+                            {
+                                postList === null ? <PostIsLoading /> : showBlogPosts(postList)
+                            }
                         </TableBody>
                         <TableFooter>
                             <TablePagination
@@ -172,7 +211,7 @@ const BlogPost = () => {
                         </TableFooter>
                     </Table>
                 </TableContainer>
-            </Box>
+            </MotionBox>
     </Container>
     )
 }
