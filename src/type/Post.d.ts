@@ -6,5 +6,3 @@ type Post = {
 
 }
 
-export type { Post };
-
