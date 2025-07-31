@@ -69,19 +69,24 @@ const showBlogPosts = (postList: Post[]) => {
     )
 }
 
+const setupSerchDetail =
+    (setter: React.Dispatch<React.SetStateAction<PostSearchType>>, newTitle: string, newCategoryId: number) => {
+    setter({
+        title: newTitle,
+        categoryId: newCategoryId});
+    }
+
 const pageSizeOptions: number[] = [8, 15, 20];
 
 const BlogPost = () => {
 
+    const [searchTitle, setSearchTitle] = React.useState<string>('');
+    const [searchCategoryId, setSearchCategoryId] = React.useState<number | null>(null);
     const [pageSize, setPageSize] = React.useState(pageSizeOptions[0]);
     const [page, setPage] = React.useState(0);
     const [postList, setPostList] = React.useState<Post[] | null>(null);
-    const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({
-        title: null,
-        categoryId: null,
-        page: null,
-        size: null,
-    });
+    const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: null, categoryId: null});
+    const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: null, size: null });
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const popoverOpen = Boolean(anchorEl);
@@ -177,20 +182,25 @@ const BlogPost = () => {
                             <Grid size={{xs: 12, md: 6}}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                     <Typography sx={{...kiyvTypeSans, color: 'black', fontWeight: 200 }}>Search:</Typography>
-                                    <TextField variant="standard" fullWidth />
+                                    <TextField variant="standard"
+                                               fullWidth
+                                               value={searchTitle}
+                                               onChange={e => setSearchTitle(e.target.value)}/>
                                 </Box>
                             </Grid>
                             <Grid size={{xs: 12, md: 6}}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, }}>
                                     <Typography sx={{...kiyvTypeSans, color: 'black', fontWeight: 200 }}>Category:</Typography>
                                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                        <InputLabel id="demo-simple-select-standard-label">Age</InputLabel>
+                                        <InputLabel id="category-menu">Category</InputLabel>
                                         <Select
-                                            labelId="demo-simple-select-standard-label"
-                                            id="demo-simple-select-standard"
-                                            label="Age"
+                                            labelId="category-menu"
+                                            id="category-select-standard"
+                                            label="Category"
+                                            value={postSearchDetail.categoryId || ''}
+                                            onChange={e => setSearchCategoryId(Number(e.target.value) || null)}
                                         >
-                                            <MenuItem value="">
+                                            <MenuItem value={null}>
                                                 <em>None</em>
                                             </MenuItem>
                                             <MenuItem value={10}>Ten</MenuItem>
@@ -209,7 +219,9 @@ const BlogPost = () => {
                                         border: '1px solid #CECECE',
                                         color: 'black',
                                         borderRadius: 5,
-                                    }}>
+                                    }}
+                                            onClick={() => setupSerchDetail(setPostSearchDetail, searchTitle, searchCategoryId)}
+                                    >
                                         Apply
                                     </Button>
                                 </Box>
