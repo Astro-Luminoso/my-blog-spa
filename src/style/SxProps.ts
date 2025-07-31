@@ -81,4 +81,4 @@ const navElement = {
 }
 
 
-export { mainPageBackground, subTitle, clickable, navElement, laBelleAurore, mainTitle, buttonReaction, }
+export { mainPageBackground, subTitle, clickable, navElement, laBelleAurore, mainTitle, buttonReaction, kiyvTypeSans }
