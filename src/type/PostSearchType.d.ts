@@ -1,6 +1,6 @@
 type PostSearchType = {
     title: string | null;
-    categoryId: string | null;
+    categoryId: number | null;
 }
 
 type ListSizeAndPage = {
