@@ -1,18 +1,18 @@
 import {
     Box, Button, CircularProgress,
-    Container,
-    Paper,
+    Container, FormControl, Grid, InputLabel, MenuItem,
+    Paper, Popover, Select,
     Table, TableBody,
     TableCell,
     TableContainer, TableFooter,
     TableHead, TablePagination,
-    TableRow,
+    TableRow, TextField,
     Typography
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 import { motion } from "framer-motion";
-import {buttonReaction, mainTitle} from "../style/SxProps.ts";
+import {buttonReaction, kiyvTypeSans, mainTitle} from "../style/SxProps.ts";
 import * as React from "react";
 import {config} from "../config/config.ts";
 import axios from "axios";
@@ -83,6 +83,14 @@ const BlogPost = () => {
         size: null,
     });
 
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const popoverOpen = Boolean(anchorEl);
+
+    const handleFilterButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("handleFilterButton is triggered");
+        setAnchorEl(event.currentTarget);
+    }
+
     const handleChangeRowsPerPage = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
@@ -130,20 +138,6 @@ const BlogPost = () => {
 
 
 
-    // React.useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         axios.get(`${config.API_URL}/open/blogposts`)
-    //             .then(res => {
-    //                 setPostList(res.data);
-    //             })
-    //     }, 2000);
-    //
-    //     return () => clearTimeout(timer);
-    // }, []);
-
-
-
-
     return (
         <Container maxWidth={false} >
             <Box sx={{height: '10vh', marginTop: '3rem'}}>
@@ -166,10 +160,63 @@ const BlogPost = () => {
                         color: 'black',
                         borderRadius: 5,
                     }}
+                    onClick={handleFilterButton}
                 >
                     Filter
                     <FilterListIcon sx={{marginLeft: '0.5rem'}}/>
                 </MotionButton>
+                <Popover
+                    open={popoverOpen}
+                    anchorEl={anchorEl}
+                    onClose={() => setAnchorEl(null)}
+                    anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                    transformOrigin={{vertical: 'top', horizontal: 'right'}}
+                >
+                    <Box sx={{ minWidth: '40vw', maxWidth: '60vw', padding: '1rem', }}>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid size={{xs: 12, md: 6}}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Typography sx={{...kiyvTypeSans, color: 'black', fontWeight: 200 }}>Search:</Typography>
+                                    <TextField variant="standard" fullWidth />
+                                </Box>
+                            </Grid>
+                            <Grid size={{xs: 12, md: 6}}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, }}>
+                                    <Typography sx={{...kiyvTypeSans, color: 'black', fontWeight: 200 }}>Category:</Typography>
+                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                        <InputLabel id="demo-simple-select-standard-label">Age</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-standard-label"
+                                            id="demo-simple-select-standard"
+                                            label="Age"
+                                        >
+                                            <MenuItem value="">
+                                                <em>None</em>
+                                            </MenuItem>
+                                            <MenuItem value={10}>Ten</MenuItem>
+                                            <MenuItem value={20}>Twenty</MenuItem>
+                                            <MenuItem value={30}>Thirty</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid size={{xs: 12}}>
+                                <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+                                    <Button sx={{
+                                        ...buttonReaction,
+                                        paddingX: '1rem',
+                                        marginRight: '5%',
+                                        border: '1px solid #CECECE',
+                                        color: 'black',
+                                        borderRadius: 5,
+                                    }}>
+                                        Apply
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Popover>
             </Box>
             <MotionBox sx={{ display: 'flex', justifyContent: 'center' }}
                     initial={{opacity: 0, x: 30}}
