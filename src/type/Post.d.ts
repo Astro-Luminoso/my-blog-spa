@@ -1,5 +1,5 @@
 type Post = {
-    postId: string;
+    postId: number;
     title: string;
     categoryTitle: string;
     updateDate: string;
