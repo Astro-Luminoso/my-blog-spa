@@ -9,6 +9,7 @@ import {
     Typography
 } from "@mui/material";
 import {buttonReaction, mainTitle} from "../../style/SxProps.ts";
+import {useNavigate} from "react-router-dom";
 
 
 const PageThree = () => {
@@ -16,7 +17,7 @@ const PageThree = () => {
     const MotionTypography = motion.create(Typography);
     const MotionBox = motion.create(Box);
     const MotionButton = motion.create(Button);
-
+    const navigate = useNavigate();
     /**
      * Function to render a no content message
      *
@@ -106,7 +107,6 @@ const PageThree = () => {
                   sx={{
                       justifyContent: 'space-between',
                       direction: 'row',
-                      minWidth: {xs: '17rem', sm: '40rem', lg: '60rem', xl: '110rem'},
                       maxWidth: {xs: '20rem', sm: '64rem', lg: '120rem'}
                   }}>
                 <Grid size={{xs:12, lg:6, xl: 7}}>
@@ -176,6 +176,7 @@ const PageThree = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 2, delay: 2.5 }}
                 exit={{opacity: 0, y: 20, transition: {duration: 0.5}}}
+                onClick={()=> navigate('/blog')}
             >See More Blog Post
             </MotionButton>
         </Container>

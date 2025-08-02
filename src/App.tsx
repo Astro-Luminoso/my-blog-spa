@@ -1,14 +1,30 @@
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes, useLocation} from "react-router-dom";
 
 import './App.css';
 import NotFound from "./component/NotFound.tsx";
 import NavBar from "./component/NavBar.tsx";
 import MainPage from "./component/MainPage.tsx";
 import {Box} from "@mui/material";
+import BlogPost from "./component/BlogPost.tsx";
+import {AnimatePresence} from "framer-motion";
 
+
+const AnimatedRoutes = () => {
+
+    const location = useLocation();
+
+    return (
+        <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+                <Route path={'/'} element={<MainPage/>}/>
+                <Route path={'/blog'} element={<BlogPost/>}/>
+                <Route path={'*'} element={<NotFound/>}/>
+            </Routes>
+        </AnimatePresence>
+    );
+}
 
 function App() {
-
 
   return (
     <div>
@@ -20,13 +36,10 @@ function App() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    mt: '64px', // To offset the fixed NavBar
+                    mt: '64px',
                     overflow: 'hidden',
                 }}>
-                <Routes>
-                    <Route path={'/'} element={<MainPage/>}/>
-                    <Route path={'*'} element={<NotFound/>}/>
-                </Routes>
+                <AnimatedRoutes />
             </Box>
         </Router>
     </div>

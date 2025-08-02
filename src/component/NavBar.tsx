@@ -1,7 +1,8 @@
 import {AppBar, Box, Button, Toolbar} from "@mui/material";
 import {config} from "../config/config.ts";
-import {useNavigate} from "react-router-dom";
 import {clickable, navElement} from "../style/SxProps.ts";
+import {useAnimatedNavigation} from "../config/hooks/useAnimatedNavigation.ts";
+import {Link} from "react-router-dom";
 
 const NavBar = () => {
 
@@ -11,12 +12,8 @@ const NavBar = () => {
         { name: 'Blog', path: '/blog' },
         { name: 'Contact', path: '/contact' },
     ];
-    const navigate = useNavigate();
 
-
-    const handleNavClick = (path: string) => {
-        navigate(path);
-    }
+    const { navigateWithAnimation } = useAnimatedNavigation();
 
     return (
         <AppBar component={'nav'} position="fixed" sx={{display: 'flex'}}>
@@ -26,7 +23,7 @@ const NavBar = () => {
                 sx={{...clickable, marginLeft: '2rem'}}
                 src={`${config.API_URL}/open/images/logo`}
                 alt={'logo'}
-                onClick={() => {handleNavClick('/')}}
+                onClick={() => {navigateWithAnimation('/')}}
                 />
 
                 <Box sx={{display: {xs: 'none', sm:'block'}, marginRight: '3rem'}}>
@@ -35,7 +32,8 @@ const NavBar = () => {
                             <Button
                                 key={index}
                                 sx={navElement}
-                                onClick={() => handleNavClick(item.path)}
+                                component={Link}
+                                to={item.path}
                                 disableRipple>
                                 {item.name}
                             </Button>

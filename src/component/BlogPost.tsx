@@ -1,0 +1,272 @@
+import {
+    Box, Button, CircularProgress,
+    Container, FormControl, Grid, InputLabel, MenuItem,
+    Paper, Popover, Select,
+    Table, TableBody,
+    TableCell,
+    TableContainer,
+    TableHead, TablePagination,
+    TableRow, TextField,
+    Typography
+} from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+
+import { motion } from "framer-motion";
+import {buttonReaction, kiyvTypeSans, mainTitle} from "../style/SxProps.ts";
+import * as React from "react";
+import {handlePostList} from "../fetch/blogDetail.ts";
+
+type TableRowBuilderProps = {
+    row1: string;
+    row2: string;
+    row3: string;
+}
+
+const TableRowBuilder: React.FC<TableRowBuilderProps> = ({ row1, row2, row3}:TableRowBuilderProps) => {
+
+    return (
+        <TableRow>
+            <TableCell sx={{width:'60%'}}>{row1}</TableCell>
+            <TableCell sx={{width:'20%', borderLeft: '1px solid #CECECE'}}>{row2}</TableCell>
+            <TableCell sx={{width:'20%', borderLeft: '1px solid #CECECE'}}>{row3}</TableCell>
+        </TableRow>
+    )
+}
+
+const MotionTypography = motion.create(Typography);
+const MotionButton = motion.create(Button);
+const MotionBox = motion.create(Box);
+
+
+const PostIsLoading = () => {
+
+    return (
+        <TableRow>
+            <TableCell colSpan={3}>
+                <Box sx={{
+                    height: `100%`,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <CircularProgress color={'inherit'} />
+                </Box>
+            </TableCell>
+        </TableRow>
+    )
+}
+
+const showBlogPosts = (postList: Post[]) => {
+
+    return (
+        postList.map((post) => {
+            return(
+                <TableRowBuilder key={post.postId}
+                                 row1={post.title}
+                                 row2={post.categoryTitle}
+                                 row3={post.updateDate}
+                                 sx={{height: 56}}/>
+            )
+        })
+
+    )
+}
+
+const setupDetail = <T extends PostSearchType | ListSizeAndPage>
+(setter: React.Dispatch<React.SetStateAction<T>>, newSearchValue: T) => {
+        console.log("setupDetail is triggered with newSearchValue: ", newSearchValue);
+    setter(newSearchValue);
+    }
+
+const pageSizeOptions: number[] = [8, 15, 20];
+
+const BlogPost = () => {
+
+    const [query, setQuery] = React.useState<string>('');
+    const [categoryId, setCategoryId] = React.useState<number>(0);
+    const [postList, setPostList] = React.useState<Post[] | null>(null);
+    const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: '', categoryId: 0});
+    const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: 0, size: pageSizeOptions[0]});
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const popoverOpen = Boolean(anchorEl);
+
+    const handleFilterButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("handleFilterButton is triggered");
+        setAnchorEl(event.currentTarget);
+    }
+
+    const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        console.log(`handleChangeRowsPerPage is triggered with new page size: ${event.target.value}`);
+        setListSizeAndPage(prev => ({...prev, size: parseInt(event.target.value, 10)}));
+
+    };
+
+    const handleChangePage = (
+        _: unknown | null,
+        newPage: number,
+    ) => {
+        console.log(`handleChangePage is triggered with newPage: ${newPage}`);
+        setListSizeAndPage(prev => ({...prev, page: newPage}));
+    };
+
+    React.useEffect(() => {
+        console.log("useEffect is triggered");
+        handlePostList(setPostList, listSizeAndPage.page, listSizeAndPage.size, postSearchDetail.title, postSearchDetail.categoryId);
+    },[listSizeAndPage, postSearchDetail])
+
+
+
+    return (
+        <Container maxWidth={false} >
+            <Box sx={{height: '10vh', marginTop: '3rem'}}>
+                <MotionTypography
+                    sx={{...mainTitle,  textAlign: 'left'}}
+                    initial={{opacity: 0, y: -30}}
+                    animate={{opacity: 1, y: 0}}
+                    exit={{opacity: 0, y: -30, transition: {duration: 0.5}}}
+                    transition={{duration: 2}}>
+                    All Posts
+                </MotionTypography>
+            </Box>
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', marginY: '1rem'}}>
+                <MotionButton
+                    sx={{
+                        ...buttonReaction,
+                        paddingX: '1rem',
+                        marginRight: '5%',
+                        border: '1px solid #CECECE',
+                        color: 'black',
+                        borderRadius: 5,
+                    }}
+                    onClick={handleFilterButton}
+                >
+                    Filter
+                    <FilterListIcon sx={{marginLeft: '0.5rem'}}/>
+                </MotionButton>
+                <Popover
+                    open={popoverOpen}
+                    anchorEl={anchorEl}
+                    onClose={() => setAnchorEl(null)}
+                    anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                    transformOrigin={{vertical: 'top', horizontal: 'right'}}
+                >
+                    <Box sx={{ minWidth: '40vw', maxWidth: '60vw', padding: '1rem', }}>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid size={{xs: 12, md: 6}}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Typography sx={{...kiyvTypeSans, color: 'black', fontWeight: 200 }}>Search:</Typography>
+                                    <TextField variant="standard"
+                                               fullWidth
+                                               value={query}
+                                               onChange={e => setQuery(e.target.value)}/>
+                                </Box>
+                            </Grid>
+                            <Grid size={{xs: 12, md: 6}}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, }}>
+                                    <Typography sx={{...kiyvTypeSans, color: 'black', fontWeight: 200 }}>Category:</Typography>
+                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                        <InputLabel id="category-menu">Category</InputLabel>
+                                        <Select
+                                            labelId="category-menu"
+                                            id="category-select-standard"
+                                            label="Category"
+                                            value={categoryId}
+                                            onChange={e => setCategoryId(Number(e.target.value))}
+                                        >
+                                            <MenuItem value={0}>
+                                                <em>All</em>
+                                            </MenuItem>
+                                            <MenuItem value={10}>Ten</MenuItem>
+                                            <MenuItem value={20}>Twenty</MenuItem>
+                                            <MenuItem value={30}>Thirty</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid size={{xs: 12}}>
+                                <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+                                    <Button sx={{
+                                        ...buttonReaction,
+                                        paddingX: '1rem',
+                                        marginRight: '5%',
+                                        border: '1px solid #CECECE',
+                                        color: 'black',
+                                        borderRadius: 5,
+                                    }}
+                                            onClick={() => setupDetail(setPostSearchDetail, {title: query, categoryId: categoryId})}
+                                    >
+                                        Apply
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Popover>
+            </Box>
+            <MotionBox sx={{ display: 'flex', justifyContent: 'center' }}
+                    initial={{opacity: 0, x: 30}}
+                    animate={{opacity: 1, x: 0}}
+                    exit={{opacity: 0, y: 30, transition: {duration: 0.5}}}
+                    transition={{duration: 2, delay: 1}}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '35rem',
+                        width: '90%',
+                        backgroundColor: '#FFFEF8',
+                        border: '2px solid #CECECE',
+                        borderLeft: 'none',
+                        borderRight: 'none',
+                        borderRadius: 0,
+                    }}
+                >
+                    <TableContainer component={Paper}
+                                    elevation={0}
+                                    sx={{
+                                        height: 'calc(36rem - 56px)',
+                                        border: '2px solid #CECECE',
+                                        borderLeft: 'none',
+                                        borderRight: 'none',
+                                        backgroundColor: '#FFFEF8',
+                                        borderRadius: 0,
+                                    }}>
+                        <Table aria-label={"blog posts table"} sx={{ tableLayout: 'fixed' }}>
+                            <TableHead sx={{borderBottom: '2px solid #CECECE'}}>
+                                <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
+                            </TableHead>
+                            <TableBody sx={{
+                                '& tr': { // Added - ensures fixed row height
+                                    height: '56px', // Fixed height for each row
+                                }
+                            }}>
+                                {
+                                    postList === null ? <PostIsLoading /> : showBlogPosts(postList)
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={pageSizeOptions}
+                        count={100}
+                        rowsPerPage={listSizeAndPage.size}
+                        page={listSizeAndPage.page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        component="div"
+                        sx={{
+                            height: '52px',
+                            borderBottom: '2px solid #CECECE',
+                        }}
+                    />
+                </Box>
+            </MotionBox>
+    </Container>
+    )
+}
+
+export default BlogPost;
