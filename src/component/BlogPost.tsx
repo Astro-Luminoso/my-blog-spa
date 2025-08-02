@@ -4,7 +4,7 @@ import {
     Paper, Popover, Select,
     Table, TableBody,
     TableCell,
-    TableContainer, TableFooter,
+    TableContainer,
     TableHead, TablePagination,
     TableRow, TextField,
     Typography
@@ -14,8 +14,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { motion } from "framer-motion";
 import {buttonReaction, kiyvTypeSans, mainTitle} from "../style/SxProps.ts";
 import * as React from "react";
-import {config} from "../config/config.ts";
-import axios from "axios";
+import {handlePostList} from "../fetch/blogDetail.ts";
 
 type TableRowBuilderProps = {
     row1: string;
@@ -23,7 +22,7 @@ type TableRowBuilderProps = {
     row3: string;
 }
 
-const TableRowBuilder: React.FC<TableRowBuilderProps> = ({row1, row2, row3}:TableRowBuilderProps) => {
+const TableRowBuilder: React.FC<TableRowBuilderProps> = ({ row1, row2, row3}:TableRowBuilderProps) => {
 
     return (
         <TableRow>
@@ -48,7 +47,7 @@ const PostIsLoading = () => {
                     height: `100%`,
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center' // Add this line
+                    alignItems: 'center'
                 }}>
                     <CircularProgress color={'inherit'} />
                 </Box>
@@ -62,31 +61,32 @@ const showBlogPosts = (postList: Post[]) => {
     return (
         postList.map((post) => {
             return(
-                <TableRowBuilder row1={post.title} row2={post.categoryTitle} row3={post.updateDate}/>
+                <TableRowBuilder key={post.postId}
+                                 row1={post.title}
+                                 row2={post.categoryTitle}
+                                 row3={post.updateDate}
+                                 sx={{height: 56}}/>
             )
         })
 
     )
 }
 
-const setupSerchDetail =
-    (setter: React.Dispatch<React.SetStateAction<PostSearchType>>, newTitle: string, newCategoryId: number) => {
-    setter({
-        title: newTitle,
-        categoryId: newCategoryId});
+const setupDetail = <T extends PostSearchType | ListSizeAndPage>
+(setter: React.Dispatch<React.SetStateAction<T>>, newSearchValue: T) => {
+        console.log("setupDetail is triggered with newSearchValue: ", newSearchValue);
+    setter(newSearchValue);
     }
 
 const pageSizeOptions: number[] = [8, 15, 20];
 
 const BlogPost = () => {
 
-    const [searchTitle, setSearchTitle] = React.useState<string>('');
-    const [searchCategoryId, setSearchCategoryId] = React.useState<number | null>(null);
-    const [pageSize, setPageSize] = React.useState(pageSizeOptions[0]);
-    const [page, setPage] = React.useState(0);
+    const [query, setQuery] = React.useState<string>('');
+    const [categoryId, setCategoryId] = React.useState<number>(0);
     const [postList, setPostList] = React.useState<Post[] | null>(null);
-    const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: null, categoryId: null});
-    const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: null, size: null });
+    const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: '', categoryId: 0});
+    const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: 0, size: pageSizeOptions[0]});
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const popoverOpen = Boolean(anchorEl);
@@ -100,7 +100,8 @@ const BlogPost = () => {
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
         console.log(`handleChangeRowsPerPage is triggered with new page size: ${event.target.value}`);
-        setPageSize(parseInt(event.target.value, 10));
+        setListSizeAndPage(prev => ({...prev, size: parseInt(event.target.value, 10)}));
+
     };
 
     const handleChangePage = (
@@ -108,38 +109,13 @@ const BlogPost = () => {
         newPage: number,
     ) => {
         console.log(`handleChangePage is triggered with newPage: ${newPage}`);
-        setPage(newPage);
+        setListSizeAndPage(prev => ({...prev, page: newPage}));
     };
-
-    const handlePostList =
-        (page: number | null, size: number | null, query: string | null, categoryId: number | null) => {
-
-        const baseUrl = `${config.API_URL}/open/blogposts`;
-        const queries : string[] = []
-        if (query) {
-            queries.push(`query=${query}`);
-        }
-        if (categoryId) {
-            queries.push(`categoryId=${categoryId}`);
-        }
-        if (page) {
-            queries.push(`page=${page}`);
-        }
-        if (size) {
-            queries.push(`size=${size}`);
-        }
-        const queryString = queries.length > 0 ? `?${queries.join('&')}` : '';
-        axios.get(baseUrl + queryString)
-            .then(res => {
-                setPostList(res.data);
-            });
-    }
-
 
     React.useEffect(() => {
         console.log("useEffect is triggered");
-        handlePostList(null, null, null, null);
-    },[])
+        handlePostList(setPostList, listSizeAndPage.page, listSizeAndPage.size, postSearchDetail.title, postSearchDetail.categoryId);
+    },[listSizeAndPage, postSearchDetail])
 
 
 
@@ -184,8 +160,8 @@ const BlogPost = () => {
                                     <Typography sx={{...kiyvTypeSans, color: 'black', fontWeight: 200 }}>Search:</Typography>
                                     <TextField variant="standard"
                                                fullWidth
-                                               value={searchTitle}
-                                               onChange={e => setSearchTitle(e.target.value)}/>
+                                               value={query}
+                                               onChange={e => setQuery(e.target.value)}/>
                                 </Box>
                             </Grid>
                             <Grid size={{xs: 12, md: 6}}>
@@ -197,11 +173,11 @@ const BlogPost = () => {
                                             labelId="category-menu"
                                             id="category-select-standard"
                                             label="Category"
-                                            value={postSearchDetail.categoryId || ''}
-                                            onChange={e => setSearchCategoryId(Number(e.target.value) || null)}
+                                            value={categoryId}
+                                            onChange={e => setCategoryId(Number(e.target.value))}
                                         >
-                                            <MenuItem value={null}>
-                                                <em>None</em>
+                                            <MenuItem value={0}>
+                                                <em>All</em>
                                             </MenuItem>
                                             <MenuItem value={10}>Ten</MenuItem>
                                             <MenuItem value={20}>Twenty</MenuItem>
@@ -220,7 +196,7 @@ const BlogPost = () => {
                                         color: 'black',
                                         borderRadius: 5,
                                     }}
-                                            onClick={() => setupSerchDetail(setPostSearchDetail, searchTitle, searchCategoryId)}
+                                            onClick={() => setupDetail(setPostSearchDetail, {title: query, categoryId: categoryId})}
                                     >
                                         Apply
                                     </Button>
@@ -236,40 +212,58 @@ const BlogPost = () => {
                     exit={{opacity: 0, y: 30, transition: {duration: 0.5}}}
                     transition={{duration: 2, delay: 1}}
             >
-                <TableContainer component={Paper}
-                                elevation={0}
-                                sx={{
-                                    border: '2px solid #CECECE',
-                                    justifyContent: 'center',
-                                    borderLeft: 'none',
-                                    borderRight: 'none',
-                                    width: '90%',
-                                    backgroundColor: '#FFFEF8',
-                                    borderRadius: 0,
-                                }}>
-                    <Table aria-label={"blog posts table"} sx={{height: '36rem'}}>
-                        <TableHead sx={{borderBottom: '2px solid #CECECE'}}>
-                            <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                postList === null ? <PostIsLoading /> : showBlogPosts(postList)
-                            }
-                        </TableBody>
-                        <TableFooter>
-                            <TablePagination
-                                rowsPerPageOptions={pageSizeOptions}
-                                count={100} // This should be the total number of posts
-                                colSpan={3}
-                                rowsPerPage={pageSize}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-
-                            />
-                        </TableFooter>
-                    </Table>
-                </TableContainer>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '35rem',
+                        width: '90%',
+                        backgroundColor: '#FFFEF8',
+                        border: '2px solid #CECECE',
+                        borderLeft: 'none',
+                        borderRight: 'none',
+                        borderRadius: 0,
+                    }}
+                >
+                    <TableContainer component={Paper}
+                                    elevation={0}
+                                    sx={{
+                                        height: 'calc(36rem - 56px)',
+                                        border: '2px solid #CECECE',
+                                        borderLeft: 'none',
+                                        borderRight: 'none',
+                                        backgroundColor: '#FFFEF8',
+                                        borderRadius: 0,
+                                    }}>
+                        <Table aria-label={"blog posts table"} sx={{ tableLayout: 'fixed' }}>
+                            <TableHead sx={{borderBottom: '2px solid #CECECE'}}>
+                                <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
+                            </TableHead>
+                            <TableBody sx={{
+                                '& tr': { // Added - ensures fixed row height
+                                    height: '56px', // Fixed height for each row
+                                }
+                            }}>
+                                {
+                                    postList === null ? <PostIsLoading /> : showBlogPosts(postList)
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={pageSizeOptions}
+                        count={100}
+                        rowsPerPage={listSizeAndPage.size}
+                        page={listSizeAndPage.page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        component="div"
+                        sx={{
+                            height: '52px',
+                            borderBottom: '2px solid #CECECE',
+                        }}
+                    />
+                </Box>
             </MotionBox>
     </Container>
     )
