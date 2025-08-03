@@ -4,7 +4,7 @@ import {
     Paper, Popover, Select,
     Table, TableBody,
     TableCell,
-    TableContainer,
+    TableContainer, TableFooter,
     TableHead, TablePagination,
     TableRow, TextField,
     Typography
@@ -65,7 +65,7 @@ const showBlogPosts = (postList: Post[]) => {
                                  row1={post.title}
                                  row2={post.categoryTitle}
                                  row3={post.updateDate}
-                                 sx={{height: 56}}/>
+                />
             )
         })
 
@@ -212,58 +212,47 @@ const BlogPost = () => {
                     exit={{opacity: 0, y: 30, transition: {duration: 0.5}}}
                     transition={{duration: 2, delay: 1}}
             >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '35rem',
-                        width: '90%',
-                        backgroundColor: '#FFFEF8',
-                        border: '2px solid #CECECE',
-                        borderLeft: 'none',
-                        borderRight: 'none',
-                        borderRadius: 0,
-                    }}
-                >
-                    <TableContainer component={Paper}
-                                    elevation={0}
-                                    sx={{
-                                        height: 'calc(36rem - 56px)',
-                                        border: '2px solid #CECECE',
-                                        borderLeft: 'none',
-                                        borderRight: 'none',
-                                        backgroundColor: '#FFFEF8',
-                                        borderRadius: 0,
-                                    }}>
-                        <Table aria-label={"blog posts table"} sx={{ tableLayout: 'fixed' }}>
-                            <TableHead sx={{borderBottom: '2px solid #CECECE'}}>
-                                <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
-                            </TableHead>
-                            <TableBody sx={{
-                                '& tr': { // Added - ensures fixed row height
-                                    height: '56px', // Fixed height for each row
-                                }
+                <TableContainer component={Paper}
+                                elevation={0}
+                                sx={{
+                                    height: `calc(${56 * 10 + 2}px)`,
+                                    border: '2px solid #CECECE',
+                                    justifyContent: 'center',
+                                    borderLeft: 'none',
+                                    borderRight: 'none',
+                                    width: '90%',
+                                    backgroundColor: '#FFFEF8',
+                                    borderRadius: 0,
+                                }}>
+                    <Table aria-label={"blog posts table"}>
+                        <TableHead sx={{'& tr': {height: '56px'}, borderBottom: '2px solid #CECECE'}}>
+                            <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
+                        </TableHead>
+                        <TableBody sx={{'& tr': { height: '56px' }}}>
+                            {
+                                postList === null ? <PostIsLoading /> : showBlogPosts(postList)
+                            }
+                        </TableBody>
+                        <TableFooter sx={{'& tr': { height: '56px' }}}>
+                            <TableRow
+                                sx={{
+                                    border: '2px solid #CECECE',
+                                    borderLeft: 'none',
+                                    borderRight: 'none'
                             }}>
-                                {
-                                    postList === null ? <PostIsLoading /> : showBlogPosts(postList)
-                                }
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={pageSizeOptions}
-                        count={100}
-                        rowsPerPage={listSizeAndPage.size}
-                        page={listSizeAndPage.page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        component="div"
-                        sx={{
-                            height: '52px',
-                            borderBottom: '2px solid #CECECE',
-                        }}
-                    />
-                </Box>
+                                <TablePagination
+                                    rowsPerPageOptions={pageSizeOptions}
+                                    count={100}
+                                    colSpan={3}
+                                    rowsPerPage={listSizeAndPage.size}
+                                    page={listSizeAndPage.page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </TableContainer>
             </MotionBox>
     </Container>
     )
