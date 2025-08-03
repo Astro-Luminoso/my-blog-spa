@@ -40,6 +40,8 @@ const MotionBox = motion.create(Box);
 
 const PostIsLoading = () => {
 
+    console.log('Table is loading');
+
     return (
         <TableRow>
             <TableCell colSpan={3}>
@@ -114,8 +116,19 @@ const BlogPost = () => {
     };
 
     React.useEffect(() => {
-        console.log("useEffect is triggered");
-        handlePostList(setPostList,setPostTotalCount, listSizeAndPage.page, listSizeAndPage.size, postSearchDetail.title, postSearchDetail.categoryId);
+
+        const fetchPosts = async () => {
+            return await handlePostList(
+                listSizeAndPage.page,
+                listSizeAndPage.size,
+                postSearchDetail.title,
+                postSearchDetail.categoryId
+            );
+        };
+        fetchPosts().then(([posts, count]) => {
+            setPostList(posts);
+            setPostTotalCount(count);
+        });
     },[listSizeAndPage, postSearchDetail])
 
 
@@ -242,7 +255,7 @@ const BlogPost = () => {
                                     borderRight: 'none'
                             }}>
                                 <TablePagination
-                                    rowsPerPageOptions={pageSizeOptions}
+                                    rowsPerPageOptions={[]}
                                     count={postTotalCount}
                                     colSpan={3}
                                     rowsPerPage={listSizeAndPage.size}
