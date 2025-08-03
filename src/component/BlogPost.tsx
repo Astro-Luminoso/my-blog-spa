@@ -86,6 +86,7 @@ const BlogPost = () => {
     const [categoryId, setCategoryId] = React.useState<number>(0);
     const [postList, setPostList] = React.useState<Post[] | null>(null);
     const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: '', categoryId: 0});
+    const [postTotalCount, setPostTotalCount] = React.useState<number>(0);
     const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: 0, size: pageSizeOptions[0]});
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -114,7 +115,7 @@ const BlogPost = () => {
 
     React.useEffect(() => {
         console.log("useEffect is triggered");
-        handlePostList(setPostList, listSizeAndPage.page, listSizeAndPage.size, postSearchDetail.title, postSearchDetail.categoryId);
+        handlePostList(setPostList,setPostTotalCount, listSizeAndPage.page, listSizeAndPage.size, postSearchDetail.title, postSearchDetail.categoryId);
     },[listSizeAndPage, postSearchDetail])
 
 
@@ -242,7 +243,7 @@ const BlogPost = () => {
                             }}>
                                 <TablePagination
                                     rowsPerPageOptions={pageSizeOptions}
-                                    count={100}
+                                    count={postTotalCount}
                                     colSpan={3}
                                     rowsPerPage={listSizeAndPage.size}
                                     page={listSizeAndPage.page}
