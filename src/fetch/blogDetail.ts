@@ -8,9 +8,12 @@ const DEFAULT_PAGE = Object.freeze(0);
 const DEFAULT_PAGE_SIZE = Object.freeze(8);
 
 const handlePostList =
-    (setter:React.Dispatch<React.SetStateAction<Post[] | null>>, page: number | null, size: number | null, query: string | null, categoryId: number | null) => {
+    (listSetter:React.Dispatch<React.SetStateAction<Post[] | null>>,
+     countSetter:React.Dispatch<React.SetStateAction<number>>,
+     page: number | null, size: number | null, query: string | null, categoryId: number | null) => {
 
-    setter(null);
+    listSetter(null);
+    countSetter(0);
 
     const baseUrl = `${config.API_URL}/open/blogposts`;
     const queries : string[] = []
@@ -31,7 +34,10 @@ const handlePostList =
     console.log(`queryString=${queryString}`);
     axios.get(baseUrl + queryString)
         .then(res => {
-            setter(res.data);
+            const postList: Post[] = res.data['postList'];
+            const totalCount: number = res.data['totalCount'];
+            listSetter(postList);
+            countSetter(totalCount);
         });
     }
 
