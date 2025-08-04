@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 import {buttonReaction, kiyvTypeSans, mainTitle} from "../style/SxProps.ts";
 import * as React from "react";
 import {handlePostList} from "../fetch/blogDetail.ts";
+import getCategories from "../fetch/category.ts";
 
 type TableRowBuilderProps = {
     row1: string;
@@ -90,6 +91,7 @@ const BlogPost = () => {
     const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: '', categoryId: 0});
     const [postTotalCount, setPostTotalCount] = React.useState<number>(0);
     const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: 0, size: pageSizeOptions[0]});
+    const [categories, setCategories] = React.useState<Category[]>([]);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const popoverOpen = Boolean(anchorEl);
@@ -130,6 +132,15 @@ const BlogPost = () => {
             setPostTotalCount(count);
         });
     },[listSizeAndPage, postSearchDetail])
+
+    React.useEffect(() => {
+        const fetchCategories = async () => {
+            return await getCategories();
+        }
+        fetchCategories().then((categories) => {
+            setCategories(categories);
+        });
+    }, [])
 
 
 
@@ -193,9 +204,11 @@ const BlogPost = () => {
                                             <MenuItem value={0}>
                                                 <em>All</em>
                                             </MenuItem>
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
+                                            {categories.map(category => (
+                                                <MenuItem key={category.categoryId} value={category.categoryId}>
+                                                    {category.categoryTitle}
+                                                </MenuItem>
+                                            ))}
                                         </Select>
                                     </FormControl>
                                 </Box>
