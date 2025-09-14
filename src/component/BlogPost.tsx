@@ -146,7 +146,7 @@ const BlogPost = () => {
 
     return (
         <Container maxWidth={false} >
-            <Box sx={{height: '10vh', marginTop: '3rem'}}>
+            <Box sx={{height: {xl:'10vh'}, marginTop: '3rem'}}>
                 <MotionTypography
                     sx={{...mainTitle,  textAlign: 'left'}}
                     initial={{opacity: 0, y: -30}}
@@ -233,7 +233,7 @@ const BlogPost = () => {
                     </Box>
                 </Popover>
             </Box>
-            <MotionBox sx={{ display: 'flex', justifyContent: 'center' }}
+            <MotionBox className={'blogPostTable'} sx={{ display: 'flex', justifyContent: 'center', height: '60vh'}}
                     initial={{opacity: 0, x: 30}}
                     animate={{opacity: 1, x: 0}}
                     exit={{opacity: 0, y: 30, transition: {duration: 0.5}}}
@@ -242,25 +242,25 @@ const BlogPost = () => {
                 <TableContainer component={Paper}
                                 elevation={0}
                                 sx={{
-                                    height: `calc(${56 * 10 + 2}px)`,
-                                    border: '2px solid #CECECE',
+                                    borderTop: '2px solid #CECECE',
                                     justifyContent: 'center',
                                     borderLeft: 'none',
                                     borderRight: 'none',
                                     width: '90%',
                                     backgroundColor: '#FFFEF8',
                                     borderRadius: 0,
+                                    height: '100%'
                                 }}>
                     <Table aria-label={"blog posts table"}>
-                        <TableHead sx={{'& tr': {height: '56px'}, borderBottom: '2px solid #CECECE'}}>
+                        <TableHead sx={{'& tr': {height: '5vh'}, borderBottom: '2px solid #CECECE'}}>
                             <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
                         </TableHead>
-                        <TableBody sx={{'& tr': { height: '56px' }}}>
+                        <TableBody sx={{'& tr': { height: '5vh' }}}>
                             {
                                 postList === null ? <PostIsLoading /> : showBlogPosts(postList)
                             }
                         </TableBody>
-                        <TableFooter sx={{'& tr': { height: '56px' }}}>
+                        <TableFooter sx={{'& tr': { height: '5vh' }}}>
                             <TableRow
                                 sx={{
                                     border: '2px solid #CECECE',
