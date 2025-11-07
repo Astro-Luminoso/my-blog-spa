@@ -15,7 +15,7 @@ const PageTwo = () => {
         const imageStyle: React.CSSProperties = {
             width: '100%',
             maxWidth: isDesktop ? 800 : isTablet ? 640 : 420,
-            maxHeight: isTablet ? '55vh' : undefined,
+            maxHeight: isDesktop ? undefined : '55vh',
             objectFit: 'contain',
             display: 'block',
             margin: '0 auto',
