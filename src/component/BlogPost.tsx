@@ -4,7 +4,7 @@ import {
     Paper, Popover, Select,
     Table, TableBody,
     TableCell,
-    TableContainer,
+    TableContainer, TableFooter,
     TableHead, TablePagination,
     TableRow, TextField,
     Typography
@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 import {buttonReaction, kiyvTypeSans, mainTitle} from "../style/SxProps.ts";
 import * as React from "react";
 import {handlePostList} from "../fetch/blogDetail.ts";
+import getCategories from "../fetch/category.ts";
 
 type TableRowBuilderProps = {
     row1: string;
@@ -39,6 +40,8 @@ const MotionBox = motion.create(Box);
 
 
 const PostIsLoading = () => {
+
+    console.log('Table is loading');
 
     return (
         <TableRow>
@@ -65,7 +68,7 @@ const showBlogPosts = (postList: Post[]) => {
                                  row1={post.title}
                                  row2={post.categoryTitle}
                                  row3={post.updateDate}
-                                 sx={{height: 56}}/>
+                />
             )
         })
 
@@ -86,7 +89,9 @@ const BlogPost = () => {
     const [categoryId, setCategoryId] = React.useState<number>(0);
     const [postList, setPostList] = React.useState<Post[] | null>(null);
     const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: '', categoryId: 0});
+    const [postTotalCount, setPostTotalCount] = React.useState<number>(0);
     const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: 0, size: pageSizeOptions[0]});
+    const [categories, setCategories] = React.useState<Category[]>([]);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const popoverOpen = Boolean(anchorEl);
@@ -113,15 +118,35 @@ const BlogPost = () => {
     };
 
     React.useEffect(() => {
-        console.log("useEffect is triggered");
-        handlePostList(setPostList, listSizeAndPage.page, listSizeAndPage.size, postSearchDetail.title, postSearchDetail.categoryId);
+
+        const fetchPosts = async () => {
+            return await handlePostList(
+                listSizeAndPage.page,
+                listSizeAndPage.size,
+                postSearchDetail.title,
+                postSearchDetail.categoryId
+            );
+        };
+        fetchPosts().then(([posts, count]) => {
+            setPostList(posts);
+            setPostTotalCount(count);
+        });
     },[listSizeAndPage, postSearchDetail])
+
+    React.useEffect(() => {
+        const fetchCategories = async () => {
+            return await getCategories();
+        }
+        fetchCategories().then((categories) => {
+            setCategories(categories);
+        });
+    }, [])
 
 
 
     return (
         <Container maxWidth={false} >
-            <Box sx={{height: '10vh', marginTop: '3rem'}}>
+            <Box sx={{height: {xl:'10vh'}, marginTop: '3rem'}}>
                 <MotionTypography
                     sx={{...mainTitle,  textAlign: 'left'}}
                     initial={{opacity: 0, y: -30}}
@@ -179,9 +204,11 @@ const BlogPost = () => {
                                             <MenuItem value={0}>
                                                 <em>All</em>
                                             </MenuItem>
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
+                                            {categories.map(category => (
+                                                <MenuItem key={category.categoryId} value={category.categoryId}>
+                                                    {category.categoryTitle}
+                                                </MenuItem>
+                                            ))}
                                         </Select>
                                     </FormControl>
                                 </Box>
@@ -206,64 +233,53 @@ const BlogPost = () => {
                     </Box>
                 </Popover>
             </Box>
-            <MotionBox sx={{ display: 'flex', justifyContent: 'center' }}
+            <MotionBox className={'blogPostTable'} sx={{ display: 'flex', justifyContent: 'center', height: '60vh'}}
                     initial={{opacity: 0, x: 30}}
                     animate={{opacity: 1, x: 0}}
                     exit={{opacity: 0, y: 30, transition: {duration: 0.5}}}
                     transition={{duration: 2, delay: 1}}
             >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '35rem',
-                        width: '90%',
-                        backgroundColor: '#FFFEF8',
-                        border: '2px solid #CECECE',
-                        borderLeft: 'none',
-                        borderRight: 'none',
-                        borderRadius: 0,
-                    }}
-                >
-                    <TableContainer component={Paper}
-                                    elevation={0}
-                                    sx={{
-                                        height: 'calc(36rem - 56px)',
-                                        border: '2px solid #CECECE',
-                                        borderLeft: 'none',
-                                        borderRight: 'none',
-                                        backgroundColor: '#FFFEF8',
-                                        borderRadius: 0,
-                                    }}>
-                        <Table aria-label={"blog posts table"} sx={{ tableLayout: 'fixed' }}>
-                            <TableHead sx={{borderBottom: '2px solid #CECECE'}}>
-                                <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
-                            </TableHead>
-                            <TableBody sx={{
-                                '& tr': { // Added - ensures fixed row height
-                                    height: '56px', // Fixed height for each row
-                                }
+                <TableContainer component={Paper}
+                                elevation={0}
+                                sx={{
+                                    borderTop: '2px solid #CECECE',
+                                    justifyContent: 'center',
+                                    borderLeft: 'none',
+                                    borderRight: 'none',
+                                    width: '90%',
+                                    backgroundColor: '#FFFEF8',
+                                    borderRadius: 0,
+                                    height: '100%'
+                                }}>
+                    <Table aria-label={"blog posts table"}>
+                        <TableHead sx={{'& tr': {height: '5vh'}, borderBottom: '2px solid #CECECE'}}>
+                            <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
+                        </TableHead>
+                        <TableBody sx={{'& tr': { height: '5vh' }}}>
+                            {
+                                postList === null ? <PostIsLoading /> : showBlogPosts(postList)
+                            }
+                        </TableBody>
+                        <TableFooter sx={{'& tr': { height: '5vh' }}}>
+                            <TableRow
+                                sx={{
+                                    border: '2px solid #CECECE',
+                                    borderLeft: 'none',
+                                    borderRight: 'none'
                             }}>
-                                {
-                                    postList === null ? <PostIsLoading /> : showBlogPosts(postList)
-                                }
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={pageSizeOptions}
-                        count={100}
-                        rowsPerPage={listSizeAndPage.size}
-                        page={listSizeAndPage.page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        component="div"
-                        sx={{
-                            height: '52px',
-                            borderBottom: '2px solid #CECECE',
-                        }}
-                    />
-                </Box>
+                                <TablePagination
+                                    rowsPerPageOptions={[]}
+                                    count={postTotalCount}
+                                    colSpan={3}
+                                    rowsPerPage={listSizeAndPage.size}
+                                    page={listSizeAndPage.page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </TableContainer>
             </MotionBox>
     </Container>
     )
