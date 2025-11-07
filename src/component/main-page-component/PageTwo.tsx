@@ -8,8 +8,18 @@ const PageTwo = () => {
     const MotionTypography = motion.create(Typography);
     const theme = useTheme();
     const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
     const welcomeImageComponent = () => {
+
+        const imageStyle: React.CSSProperties = {
+            width: '100%',
+            maxWidth: isDesktop ? 800 : isTablet ? 640 : 420,
+            maxHeight: isTablet ? '55vh' : undefined,
+            objectFit: 'contain',
+            display: 'block',
+            margin: '0 auto',
+        };
 
         return (
             <motion.img
@@ -19,7 +29,7 @@ const PageTwo = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 2 }}
                 exit={{opacity: 0, x: 30, transition: {duration: 0.5}}}
-                style={{ width: '100%', maxWidth: 800 }}
+                style={imageStyle}
             />
         )
     }
