@@ -14,22 +14,45 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { motion } from "framer-motion";
 import {buttonReaction, kiyvTypeSans, mainTitle} from "../style/SxProps.ts";
 import * as React from "react";
+import {Link} from "react-router-dom";
 import {handlePostList} from "../fetch/blogDetail.ts";
 import getCategories from "../fetch/category.ts";
 
 type TableRowBuilderProps = {
-    row1: string;
-    row2: string;
-    row3: string;
+    col1: string;
+    col2: string;
+    col3: string;
+}
+type BlogPostRowProps = TableRowBuilderProps & {
+    postId: number;
 }
 
-const TableRowBuilder: React.FC<TableRowBuilderProps> = ({ row1, row2, row3}:TableRowBuilderProps) => {
+const TableHeaderBuilder : React.FC<TableRowBuilderProps> = ({ col1, col2, col3}:TableRowBuilderProps) => {
 
     return (
         <TableRow>
-            <TableCell sx={{width:'60%'}}>{row1}</TableCell>
-            <TableCell sx={{width:'20%', borderLeft: '1px solid #CECECE'}}>{row2}</TableCell>
-            <TableCell sx={{width:'20%', borderLeft: '1px solid #CECECE'}}>{row3}</TableCell>
+            <TableCell sx={{width:'60%', fontWeight: 'bold'}}>{col1}</TableCell>
+            <TableCell sx={{width:'20%', borderLeft: '1px solid #CECECE', fontWeight: 'bold'}}>{col2}</TableCell>
+            <TableCell sx={{width:'20%', borderLeft: '1px solid #CECECE', fontWeight: 'bold'}}>{col3}</TableCell>
+        </TableRow>
+    )
+}
+
+const TableRowBuilder: React.FC<BlogPostRowProps> = ({ col1, col2, col3, postId}:BlogPostRowProps) => {
+
+    return (
+        <TableRow>
+            <TableCell
+                sx={{
+                    width:'60%',
+                    '&:hover': { textDecoration: 'underline', cursor: 'pointer' },
+                }}>
+                <Link to={`/blog/${postId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {col1}
+                </Link>
+                </TableCell>
+            <TableCell sx={{width:'20%'}}>{col2}</TableCell>
+            <TableCell sx={{width:'20%'}}>{col3}</TableCell>
         </TableRow>
     )
 }
@@ -65,9 +88,11 @@ const showBlogPosts = (postList: Post[]) => {
         postList.map((post) => {
             return(
                 <TableRowBuilder key={post.postId}
-                                 row1={post.title}
-                                 row2={post.categoryTitle}
-                                 row3={post.updateDate}
+                                 postId={post.postId}
+                                 col1={post.title}
+                                 col2={post.categoryTitle}
+                                 col3={post.updateDate}
+
                 />
             )
         })
@@ -81,7 +106,7 @@ const setupDetail = <T extends PostSearchType | ListSizeAndPage>
     setter(newSearchValue);
     }
 
-const pageSizeOptions: number[] = [8, 15, 20];
+const pageSizeOption: number = 6;
 
 const BlogPost = () => {
 
@@ -90,7 +115,7 @@ const BlogPost = () => {
     const [postList, setPostList] = React.useState<Post[] | null>(null);
     const [postSearchDetail, setPostSearchDetail] = React.useState<PostSearchType>({title: '', categoryId: 0});
     const [postTotalCount, setPostTotalCount] = React.useState<number>(0);
-    const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: 0, size: pageSizeOptions[0]});
+    const [listSizeAndPage, setListSizeAndPage] = React.useState<ListSizeAndPage>({ page: 0, size: pageSizeOption});
     const [categories, setCategories] = React.useState<Category[]>([]);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -253,7 +278,7 @@ const BlogPost = () => {
                                 }}>
                     <Table aria-label={"blog posts table"}>
                         <TableHead sx={{'& tr': {height: '5vh'}, borderBottom: '2px solid #CECECE'}}>
-                            <TableRowBuilder row1={"Title"} row2={"Category"} row3={"Date Issued"}/>
+                            <TableHeaderBuilder col1={"Title"} col2={"Category"} col3={"Date Issued"}/>
                         </TableHead>
                         <TableBody sx={{'& tr': { height: '5vh' }}}>
                             {
